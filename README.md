@@ -169,8 +169,14 @@ cd distributed-ai-inference-platform/terraform
 ```
 
 ---
+## Step 2 — Configure AWS Credentials (Windows PowerShell)
+```bash
+$env:AWS_ACCESS_KEY_ID="your-access-key"
+$env:AWS_SECRET_ACCESS_KEY="your-secret-key"
+$env:AWS_DEFAULT_REGION="us-east-1"
+```
 
-## Step 2 — Initialize Terraform
+## Step 3 — Initialize Terraform
 
 ```bash
 terraform init
@@ -178,7 +184,7 @@ terraform init
 
 ---
 
-## Step 3 — Validate Configuration
+## Step 4 — Validate Configuration
 
 ```bash
 terraform validate
@@ -186,7 +192,7 @@ terraform validate
 
 ---
 
-## Step 4 — Review Infrastructure Plan
+## Step 5 — Review Infrastructure Plan
 
 ```bash
 terraform plan
@@ -194,7 +200,7 @@ terraform plan
 
 ---
 
-## Step 5 — Deploy Infrastructure
+## Step 6 — Deploy Infrastructure
 
 ```bash
 terraform apply -auto-approve
@@ -202,7 +208,7 @@ terraform apply -auto-approve
 
 ---
 
-## Step 6 — Get Outputs
+## Step 7 — Get Outputs
 
 ```bash
 terraform output
