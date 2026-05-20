@@ -480,7 +480,7 @@ Add screenshots for:
 
 # Architecture Diagram
 
-![Architecture Diagram](screenshots/architecture.png)
+<img width="1536" height="1024" alt="architecture png" src="https://github.com/user-attachments/assets/2310feda-8a5f-4ef6-a1b8-d1c7a39b9a55" />
 
 
 * Worker Health Checks
