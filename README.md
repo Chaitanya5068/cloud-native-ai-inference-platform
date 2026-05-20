@@ -1,5 +1,11 @@
 # Distributed AI Inference Platform
 
+![AWS](https://img.shields.io/badge/AWS-Cloud-orange)
+![Terraform](https://img.shields.io/badge/Terraform-IaC-blue)
+![Docker](https://img.shields.io/badge/Docker-Containers-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Python-green)
+![Status](https://img.shields.io/badge/Project-Completed-success)
+
 ## Overview
 
 Distributed AI Inference Platform is a production-style DevOps project built using AWS, Terraform, Docker, FastAPI, and distributed worker services.
@@ -211,26 +217,31 @@ worker_server_private_ip = "10.0.2.xx"
 
 ---
 
-# SSH Access
+# Copy SSH Key to API EC2
 
-## Connect to API EC2
+* From local machine:
+```bash
+scp -i distributed-ai-inference-platform \
+./distributed-ai-inference-platform \
+ubuntu@<API_PUBLIC_IP>:~/
+```
+Set Key Permissions
 
+
+* Inside API EC2:
+```bash
+chmod 400 distributed-ai-inference-platform
+```
+
+Connect to Worker EC2
+* First connect to API EC2:
 ```bash
 ssh -i your-key.pem ubuntu@<API_PUBLIC_IP>
 ```
 
----
-
-## Connect to Worker EC2
-
+* Then connect to Worker EC2:
 ```bash
-ssh -i your-key.pem ubuntu@<API_PRIVATE_IP>
-```
-
-Then:
-
-```bash
-ssh ubuntu@10.0.2.xx
+ssh -i distributed-ai-inference-platform ubuntu@10.0.2.xx
 ```
 
 ---
@@ -435,12 +446,39 @@ terraform destroy -auto-approve
 
 Add screenshots for:
 
-* Terraform Apply Success
-* AWS EC2 Dashboard
+## Terraform Apply Success
+
+![Terraform Apply 1](screenshots/terraform-output1.png)
+
+![Terraform Apply 2](screenshots/terraform-output2.png)
+
+## AWS EC2 Dashboard
+
+![AWS EC2 Dashboard](screenshots/aws-ec2-dashboard.png)
+
+![AWS API Server EC2](screenshots/aws-api-server-ec2-dashboard.png)
+
+![AWS Worker Server EC2](screenshots/aws-worker-server-ec2-dashboard.png)
+
 * Docker Running Containers
+<img width="1299" height="63" alt="image" src="https://github.com/user-attachments/assets/25fb894b-b692-4811-bf14-a74efbaedc1e" />
+
+* Worker Containers
+<img width="1319" height="686" alt="image" src="https://github.com/user-attachments/assets/bb3022a6-6248-4c31-add4-22ed621f8429" />
+<img width="1298" height="655" alt="image" src="https://github.com/user-attachments/assets/a78ba3d2-ebb2-4909-b596-0705b6350eb7" />
+<img width="1658" height="137" alt="image" src="https://github.com/user-attachments/assets/3f7a7e19-355f-497f-aa1a-885f1756dbcd" />
+
 * API Curl Response
-* Architecture Diagram
+<img width="1318" height="213" alt="Screenshot 2026-05-21 023629" src="https://github.com/user-attachments/assets/97b3c13f-4d11-45b1-9761-0004fc9a1fb8" />
+
+# Architecture Diagram
+
+![Architecture Diagram](screenshots/architecture.png)
+
+
 * Worker Health Checks
+<img width="1391" height="75" alt="image" src="https://github.com/user-attachments/assets/472728b8-16db-4c37-bb3e-1f8cea57bea5" />
+
 
 ---
 
@@ -460,4 +498,14 @@ This project successfully demonstrates:
 
 # Author
 
-Chaitanya Bhosale
+**Chaitanya Bhosale**
+
+🔗 GitHub: https://github.com/Chaitanya5068
+
+🔗 LinkedIn: https://www.linkedin.com/in/chaitanya-bhosale
+
+---
+
+## ⭐ Support
+
+If you found this project useful, consider giving it a ⭐ on GitHub!
