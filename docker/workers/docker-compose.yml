@@ -1,0 +1,79 @@
+# Worker Services Docker Compose Configuration
+# Orchestrates Python, TypeScript, and Model workers
+# All services communicate internally on the private subnet
+
+version: '3.8'
+
+services:
+  # Python Worker - First processing step
+  python-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: python-worker
+    ports:
+      - "8001:8001"
+    environment:
+      PYTHON_WORKER_PORT: 8001
+      TS_WORKER_URL: http://ts-worker:8002
+      LOG_LEVEL: INFO
+    networks:
+      - worker-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - ts-worker
+
+  # TypeScript Worker - Second processing step
+  ts-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.ts
+    container_name: ts-worker
+    ports:
+      - "8002:8002"
+    environment:
+      TS_WORKER_PORT: 8002
+      MODEL_WORKER_URL: http://model-worker:8003
+    networks:
+      - worker-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - model-worker
+
+  # Model Worker - Final processing step
+  model-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.model
+    container_name: model-worker
+    ports:
+      - "8003:8003"
+    environment:
+      MODEL_WORKER_PORT: 8003
+      LOG_LEVEL: INFO
+    networks:
+      - worker-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  worker-network:
+    driver: bridge
+    name: worker-network

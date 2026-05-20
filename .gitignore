@@ -1,0 +1,110 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+*.tfvars
+!terraform.tfvars.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+package-lock.json
+
+# Docker
+.docker/
+docker-compose.override.yml
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.tmp
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# AWS
+.aws/
+aws_credentials
+aws_config
+
+# SSH Keys
+*.pem
+*.pub
+*.key
+*_rsa
+*_dsa
+
+# Sensitive data
+secrets/
+credentials/
+tokens/
+passwords/
+
+# Build outputs
+dist/
+build/
+*.zip
+
+# Keep examples
+!terraform.tfvars.example
+!.env.example

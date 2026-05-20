@@ -1,0 +1,223 @@
+DISTRIBUTED AI INFERENCE PLATFORM - ARCHITECTURE DIAGRAM
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         AWS VPC (10.0.0.0/16)                          │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                    PUBLIC SUBNET (10.0.1.0/24)                    │ │
+│  │                                                                    │ │
+│  │  ┌──────────────────────────────────────────────────────────────┐ │ │
+│  │  │                  PUBLIC EC2 INSTANCE                        │ │ │
+│  │  │                  (api-server: t2.micro)                    │ │ │
+│  │  │                                                              │ │ │
+│  │  │  ┌────────────────────────────────────────────────────────┐ │ │ │
+│  │  │  │           FastAPI Application                         │ │ │ │
+│  │  │  │                                                        │ │ │ │
+│  │  │  │  ┌─────────────────────────────────────────────────┐ │ │ │ │
+│  │  │  │  │  POST /infer                                   │ │ │ │ │
+│  │  │  │  │  ├─ Receive JSON prompt                        │ │ │ │ │
+│  │  │  │  │  ├─ Validate request                           │ │ │ │ │
+│  │  │  │  │  └─ Forward to Worker (8001)                  │ │ │ │ │
+│  │  │  │  └─────────────────────────────────────────────────┘ │ │ │ │
+│  │  │  │                         │                            │ │ │ │
+│  │  │  │                         ▼                            │ │ │ │
+│  │  │  │  ┌─────────────────────────────────────────────────┐ │ │ │ │
+│  │  │  │  │  GET /health                                   │ │ │ │ │
+│  │  │  │  │  GET /docs (Swagger UI)                        │ │ │ │ │
+│  │  │  │  │  GET /redoc (ReDoc)                            │ │ │ │ │
+│  │  │  │  └─────────────────────────────────────────────────┘ │ │ │ │
+│  │  │  │                                                        │ │ │ │
+│  │  │  │         Docker Container                             │ │ │ │
+│  │  │  │         Port 8000 (HTTP)                             │ │ │ │
+│  │  │  └────────────────────────────────────────────────────┘ │ │ │
+│  │  │                                                          │ │ │
+│  │  │  ┌────────────────────────────────────────────────────┐ │ │ │
+│  │  │  │         Network Configuration                     │ │ │ │
+│  │  │  ├─ Inbound: Port 22 (SSH)                          │ │ │ │
+│  │  │  ├─ Inbound: Port 80 (HTTP)                         │ │ │ │
+│  │  │  ├─ Inbound: Port 443 (HTTPS)                       │ │ │ │
+│  │  │  └─ Outbound: All traffic (to Worker via VPC)      │ │ │ │
+│  │  │  └────────────────────────────────────────────────────┘ │ │ │
+│  │  │                                                          │ │ │
+│  │  └──────────────────────────────────────────────────────────┘ │ │
+│  │           Public IP: Assigned by AWS                         │ │
+│  │           Private IP: 10.0.1.x                              │ │
+│  │           Internet Access: Via IGW                          │ │
+│  │                                                              │ │
+│  └────────────────────────────────────────────────────────────────────┘
+│                                │
+│                                │ Internal VPC Communication
+│                                ▼
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                    PRIVATE SUBNET (10.0.2.0/24)                   │ │
+│  │                                                                    │ │
+│  │  ┌──────────────────────────────────────────────────────────────┐ │ │
+│  │  │                  PRIVATE EC2 INSTANCE                       │ │ │
+│  │  │                  (worker-server: t2.micro)                 │ │ │
+│  │  │                                                              │ │ │
+│  │  │  Docker Compose Network: worker-network (bridge)            │ │ │
+│  │  │                                                              │ │ │
+│  │  │  ┌─────────────────────────┬────────────┬─────────────────┐ │ │ │
+│  │  │  │   Python Worker         │  TS Worker │  Model Worker   │ │ │ │
+│  │  │  │   Port: 8001            │  Port: 8002│  Port: 8003     │ │ │ │
+│  │  │  │                         │            │                 │ │ │ │
+│  │  │  │ POST /process           │POST/process│ POST /process   │ │ │ │
+│  │  │  │ - Validate              │            │ - Generate mock │ │ │ │
+│  │  │  │ - Add metadata          │ - Forward  │   response      │ │ │ │
+│  │  │  │ - Forward to TS         │ - Forward  │ - Return result │ │ │ │
+│  │  │  │                         │ to Model   │                 │ │ │ │
+│  │  │  │                         │            │                 │ │ │ │
+│  │  │  │ GET /health             │GET/health  │GET /health      │ │ │ │
+│  │  │  │                         │            │                 │ │ │ │
+│  │  │  │ Processing Pipeline:                                    │ │ │ │
+│  │  │  │ API → Python (8001) → TypeScript (8002) → Model (8003) │ │ │ │
+│  │  │  │                                                          │ │ │ │
+│  │  │  └─────────────────────────┴────────────┴─────────────────┘ │ │ │
+│  │  │                                                              │ │ │
+│  │  │  ┌────────────────────────────────────────────────────────┐ │ │ │
+│  │  │  │         Network Configuration                         │ │ │ │
+│  │  │  ├─ Inbound: VPC traffic (10.0.0.0/16)                  │ │ │ │
+│  │  │  ├─ No Public IP (Private)                              │ │ │ │
+│  │  │  ├─ Outbound: Via NAT Gateway                           │ │ │ │
+│  │  │  └─ Internal: Docker bridge network                     │ │ │ │
+│  │  │  └────────────────────────────────────────────────────────┘ │ │ │
+│  │  │                                                              │ │ │
+│  │  └──────────────────────────────────────────────────────────────┘ │ │
+│  │           Private IP: 10.0.2.x                              │ │
+│  │           No Public IP Access                               │ │
+│  │           Internet Access: Via NAT Gateway                  │ │
+│  │                                                              │ │
+│  └────────────────────────────────────────────────────────────────────┘
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                    NETWORK INFRASTRUCTURE                         │ │
+│  │                                                                    │ │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │ │
+│  │  │  Internet Gateway (IGW)                                    │ │ │
+│  │  │  - Routes public subnet traffic to internet                │ │ │
+│  │  └─────────────────────────────────────────────────────────────┘ │ │
+│  │                                                                    │ │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │ │
+│  │  │  NAT Gateway                                               │ │ │
+│  │  │  - Allows private subnet to reach internet                 │ │ │
+│  │  │  - Prevents inbound connections from internet              │ │ │
+│  │  │  - Located in public subnet                                │ │ │
+│  │  └─────────────────────────────────────────────────────────────┘ │ │
+│  │                                                                    │
+│  └────────────────────────────────────────────────────────────────────┘
+│                                                                          │
+│  Security Groups:                                                       │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │  API Server SG                                                     │ │
+│  │  - Inbound: 22 (SSH)     - From your IP                            │ │
+│  │  - Inbound: 80 (HTTP)    - From 0.0.0.0/0                         │ │
+│  │  - Inbound: 443 (HTTPS)  - From 0.0.0.0/0                         │ │
+│  │  - Outbound: All traffic                                           │ │
+│  │                                                                    │ │
+│  │  Worker Server SG                                                  │ │
+│  │  - Inbound: All VPC traffic (10.0.0.0/16)                         │ │
+│  │  - Inbound: ICMP (Ping)                                            │ │
+│  │  - Outbound: All traffic                                           │ │
+│  │  - No direct internet access (private subnet)                      │ │
+│  └────────────────────────────────────────────────────────────────────┘
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+DATA FLOW:
+
+1. User/Client Request
+   └─> HTTP POST /infer to Public IP:80
+       └─> API Gateway (FastAPI)
+           └─> Internal VPC request to Worker:8001
+               └─> Python Worker receives request
+                   └─> Forwards to TypeScript Worker:8002
+                       └─> TypeScript Worker validates
+                           └─> Forwards to Model Worker:8003
+                               └─> Model Worker generates response
+                                   └─> Returns response back through pipeline
+                                       └─> API Gateway returns JSON to client
+
+2. Health Checks
+   └─> All services expose /health endpoint
+   └─> Monitored by Docker health checks
+   └─> Can be checked via curl or monitoring tools
+
+TECHNOLOGY STACK:
+
+┌─────────────────────────────┐
+│ Infrastructure              │
+├─────────────────────────────┤
+│ Cloud: AWS                  │
+│ IaC Tool: Terraform         │
+│ Instances: EC2 (t2.micro)   │
+│ OS: Ubuntu 22.04            │
+│ Network: VPC, IGW, NAT GW   │
+└─────────────────────────────┘
+
+┌─────────────────────────────┐
+│ Container & Orchestration   │
+├─────────────────────────────┤
+│ Container: Docker           │
+│ Orchestration: Docker Compose│
+│ Images: Python 3.11, Node.js│
+└─────────────────────────────┘
+
+┌─────────────────────────────┐
+│ Application Framework       │
+├─────────────────────────────┤
+│ API: FastAPI (Python)       │
+│ Workers: Python, Node.js    │
+│ Port Management: Dynamic    │
+│ Communication: HTTP/REST    │
+└─────────────────────────────┘
+
+SECURITY FEATURES:
+
+1. Network Isolation
+   - Public and private subnets
+   - Worker server has no public IP
+   - NAT Gateway prevents direct internet access to workers
+
+2. Security Groups
+   - Principle of least privilege
+   - SSH access restricted to your IP
+   - Worker communication only within VPC
+
+3. No Data Exposure
+   - Private subnet communication is internal
+   - No sensitive data exposed to internet
+
+PRODUCTION IMPROVEMENTS:
+
+1. HTTPS/TLS
+   - Use AWS Certificate Manager (ACM)
+   - Configure HTTPS on API Gateway
+   - Encrypt worker communication
+
+2. Load Balancing
+   - Add Application Load Balancer (ALB)
+   - Distribute traffic across multiple API instances
+
+3. Auto Scaling
+   - Configure Auto Scaling Groups
+   - Scale based on CPU/Memory utilization
+
+4. Monitoring & Logging
+   - CloudWatch for logs
+   - Prometheus/Grafana for metrics
+   - Health checks and alerts
+
+5. Container Orchestration
+   - Migrate to Kubernetes (EKS)
+   - Better scalability and management
+   - Rolling deployments
+
+6. Data Persistence
+   - RDS for database
+   - ElastiCache for caching
+   - S3 for object storage
+
+7. Secrets Management
+   - AWS Secrets Manager
+   - Rotate credentials regularly
+   - Never commit secrets to Git
