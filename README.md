@@ -446,19 +446,20 @@ terraform destroy -auto-approve
 
 Add screenshots for:
 
-## Terraform Apply Success
+* Terraform Apply Success
 
-![Terraform Apply 1](screenshots/terraform-output1.png)
+<img width="1310" height="914" alt="terraform-output1 png" src="https://github.com/user-attachments/assets/8bfd1fd5-e81b-4c34-9684-09c88af836bb" />
 
-![Terraform Apply 2](screenshots/terraform-output2.png)
+<img width="1314" height="702" alt="terraform-output2 png" src="https://github.com/user-attachments/assets/24506cbb-c071-45a4-99a2-ebf495ec1c24" />
 
-## AWS EC2 Dashboard
 
-![AWS EC2 Dashboard](screenshots/aws-ec2-dashboard.png)
+* AWS EC2 Dashboard
 
-![AWS API Server EC2](screenshots/aws-api-server-ec2-dashboard.png)
+<img width="1919" height="367" alt="aws-ec2-dashboard png" src="https://github.com/user-attachments/assets/5b41dabe-e844-456c-a187-f2d4e9be4048" />
 
-![AWS Worker Server EC2](screenshots/aws-worker-server-ec2-dashboard.png)
+<img width="1677" height="780" alt="aws-api-server-ec2-dashboard png" src="https://github.com/user-attachments/assets/15df0da4-5b45-46b2-a9e3-bddf0a75634b" />
+
+<img width="1643" height="783" alt="aws-worker-server-ec2-dashboard png" src="https://github.com/user-attachments/assets/34050bd6-856b-4453-a69c-c04b3ea4e3e5" />
 
 * Docker Running Containers
 <img width="1299" height="63" alt="image" src="https://github.com/user-attachments/assets/25fb894b-b692-4811-bf14-a74efbaedc1e" />
