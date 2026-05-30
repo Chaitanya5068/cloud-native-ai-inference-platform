@@ -1,4 +1,4 @@
-# Distributed AI Inference Platform
+# Cloud-Native AI Inference Platform
 
 ![AWS](https://img.shields.io/badge/AWS-Cloud-orange)
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-blue)
@@ -8,7 +8,7 @@
 
 ## Overview
 
-Distributed AI Inference Platform is a production-style DevOps project built using AWS, Terraform, Docker, FastAPI, and distributed worker services.
+Cloud-Native AI Inference Platform is a production-style DevOps project built using AWS, Terraform, Docker, FastAPI, and distributed worker services.
 
 This project demonstrates:
 
@@ -90,7 +90,7 @@ JSON Response Returned
 # Project Structure
 
 ```text
-distributed-ai-inference-platform/
+cloud-native-ai-inference-platform/
 │
 ├── terraform/
 │   ├── provider.tf
@@ -164,8 +164,9 @@ RPC communication occurs through private IP addresses only.
 ## Step 1 — Clone Repository
 
 ```bash
-git clone https://github.com/your-username/distributed-ai-inference-platform.git
-cd distributed-ai-inference-platform/terraform
+git clone https://github.com/Chaitanya5068/cloud-native-ai-inference-platform.git
+
+cd cloud-native-ai-inference-platform/terraform
 ```
 
 ---
@@ -227,8 +228,8 @@ worker_server_private_ip = "10.0.2.xx"
 
 * From local machine:
 ```bash
-scp -i distributed-ai-inference-platform \
-./distributed-ai-inference-platform \
+scp -i cloud-native-ai-inference-platform.pem \
+./cloud-native-ai-inference-platform.pem \
 ubuntu@<API_PUBLIC_IP>:~/
 ```
 Set Key Permissions
@@ -236,7 +237,7 @@ Set Key Permissions
 
 * Inside API EC2:
 ```bash
-chmod 400 distributed-ai-inference-platform
+chmod 400 cloud-native-ai-inference-platform.pem
 ```
 
 Connect to Worker EC2
@@ -247,7 +248,7 @@ ssh -i your-key.pem ubuntu@<API_PUBLIC_IP>
 
 * Then connect to Worker EC2:
 ```bash
-ssh -i distributed-ai-inference-platform ubuntu@10.0.2.xx
+ssh -i cloud-native-ai-inference-platform.pem ubuntu@10.0.2.xx
 ```
 
 ---
@@ -257,7 +258,7 @@ ssh -i distributed-ai-inference-platform ubuntu@10.0.2.xx
 ## Step 1 — Go to Worker Directory
 
 ```bash
-cd ~/distributed-ai-inference-platform/docker/workers
+cd ~/cloud-native-ai-inference-platform/docker/workers
 ```
 
 ---
